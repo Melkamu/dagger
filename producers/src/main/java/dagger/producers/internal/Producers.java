@@ -62,11 +62,12 @@ public final class Producers {
   private static final FutureFallback<Produced<Object>> FUTURE_FALLBACK_FOR_PRODUCED =
       new FutureFallback<Produced<Object>>() {
     @Override public ListenableFuture<Produced<Object>> create(final Throwable t) {
-      return Futures.immediateFuture(new Produced<Object>() {
+      Produced<Object> throwingProduced = new Produced<Object>() {
         @Override public Object get() throws ExecutionException {
           throw new ExecutionException(t);
         }
-      });
+      };
+      return Futures.immediateFuture(throwingProduced);
     }
   };
 
