@@ -47,6 +47,7 @@ public final class Producers {
   // TODO(user): Document what happens with an InterruptedException after you figure out how to
   // trigger one in a test.
   public static <T> ListenableFuture<Produced<T>> createFutureProduced(ListenableFuture<T> future) {
+    FutureFallback<Produced<T>> fallback = futureFallbackForProduced();
     return Futures.withFallback(
         Futures.transform(future, new Function<T, Produced<T>>() {
           @Override public Produced<T> apply(final T value) {
@@ -56,7 +57,7 @@ public final class Producers {
               }
             };
           }
-        }), futureFallbackForProduced());
+        }), fallback);
   }
 
   private static final FutureFallback<Produced<Object>> FUTURE_FALLBACK_FOR_PRODUCED =
